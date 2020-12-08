@@ -36,7 +36,7 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, use
 aws.config.update({
     secretAccessKey: process.env.AWS_SCRET_ACCESS_KEY,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    region: 'us-west-2'
+    region: 'us-east-1'
 }, err => {
     if (err) console.log(err)
 
