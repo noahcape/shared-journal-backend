@@ -22,7 +22,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 app.use("/posts", require("./routes/postRoute"));
 app.use("/users", require("./routes/userRoute"));
 app.use("/settings", require("./routes/userSettingsRoute"));
-app.use("/favicon.ico")
 
 // set up mongoose
 console.log("Connection to MongoDB");
