@@ -25,7 +25,7 @@ app.use("/settings", require("./routes/userSettingsRoute"));
 
 // set up mongoose
 console.log("Connection to MongoDB");
-var mongoDB = "mongodb://127.0.0.1/shared-journal";
+var mongoDB = process.env.MONGO_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, err => {
     if (err) console.log(err);
 
