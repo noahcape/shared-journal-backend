@@ -36,6 +36,7 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, use
 aws.config.update({
     secretAccessKey: process.env.AWS_SCRET_ACCESS_KEY,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    endpoint: 'https://shared-journal-backend.herokuapp.com',
     region: 'us-east-1'
 }, err => {
     if (err) console.log(err)
