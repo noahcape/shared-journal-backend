@@ -128,17 +128,15 @@ router.delete("/:id", auth, async (req, res) => {
         s3.deleteObject({
             Bucket: "shared-journal",
             Key: key
-        }, function async (err) {
+        }, function (err) {
             if (err) {
                 return res.json({ error: err.message }).end()
-            } else {
-                const deleltedPost = await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
-                return res.json(deleltedPost).end();
-            }
+            } 
         })
     })
+    const deleltedPost = await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
+    return res.json(deleltedPost).end();
 
-    
 })
 
 // edit text by id
