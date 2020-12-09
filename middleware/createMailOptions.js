@@ -3,7 +3,7 @@ const fs = require("fs")
 
 module.exports = async function mailOptions(data) {
     const transport = nodemailer.createTransport("SMTP", {
-        host: 'GMAIL',
+        service: 'Gmail',
         auth: {
             user: "noahcape@gmail.com",
             pass: "M@rcelle3!"
