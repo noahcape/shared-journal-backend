@@ -2,8 +2,10 @@ const nodemailer = require("nodemailer");
 const fs = require("fs")
 
 module.exports = async function mailOptions(data) {
-    const transport = nodemailer.createTransport("SMTP", {
+    const transport = nodemailer.createTransport({
         service: 'Gmail',
+        port: 587,
+        secure: "false",
         auth: {
             user: "noahcape@gmail.com",
             pass: "M@rcelle3!"
