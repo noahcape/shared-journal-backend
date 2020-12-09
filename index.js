@@ -68,22 +68,3 @@ const task = new CronJob('0 0 1 * *', function () {
 task.start()
 
 setInterval(() => {console.log("ping")}, 180000)
-
-console.log("Must be the first of the month")
-const getUserData = async () => {
-    return await getUsers
-}
-
-getUserData().then(async result => {
-    let users = []
-
-    result.map(user => {
-        users.push(user._id)
-    })
-
-    try {
-        compileUpdates(users)
-    } catch (e) {
-        console.error(e)
-    }
-})
