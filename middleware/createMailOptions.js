@@ -17,29 +17,29 @@ module.exports = async function mailOptions(data) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
     // for each jounral entry create a new file and then pull information from it to pull into html template
-    data.posts.map((post, index) => {
-        const date = `${new Date(post.date).getDate()} ~ ${months[post.month]} ~ ${post.year}`
-        const url = `http://localhost:3000/visitor/${data.journal_name.split(" ").join("_")}`
+    // data.posts.map((post, index) => {
+    //     const date = `${new Date(post.date).getDate()} ~ ${months[post.month]} ~ ${post.year}`
+    //     const url = `http://localhost:3000/visitor/${data.journal_name.split(" ").join("_")}`
 
-        const full_post = "journal name: " + data.journal_name + "\n" + 
-                        "recipients: " + to + "\n" + 
-                        "subject: " + subject + "\n" + 
-                        "images: " + post.images + "\n" + 
-                        "text: " + post.text + "\n" + 
-                        "post date: " + date + "\n" + 
-                        "journal url: " + url;
+    //     const full_post = "journal name: " + data.journal_name + "\n" + 
+    //                     "recipients: " + to + "\n" + 
+    //                     "subject: " + subject + "\n" + 
+    //                     "images: " + post.images + "\n" + 
+    //                     "text: " + post.text + "\n" + 
+    //                     "post date: " + date + "\n" + 
+    //                     "journal url: " + url;
 
-        fs.mkdir(`./middleware/emails/${data.journal_name.split(" ").join("_")}`, function (err, data) { })
-        const fileName = `${data.journal_name.split(" ").join("_")}/email_${index}`
-        fs.writeFile(`./middleware/emails/${fileName}`, full_post, function (err, test) {
-            if (err) {
-                console.error(err)
-            } else {
-                console.log(test)
-            }
-        })
+    //     fs.mkdir(`./middleware/emails/${data.journal_name.split(" ").join("_")}`, function (err, data) { })
+    //     const fileName = `${data.journal_name.split(" ").join("_")}/email_${index}`
+    //     fs.writeFile(`./middleware/emails/${fileName}`, full_post, function (err, test) {
+    //         if (err) {
+    //             console.error(err)
+    //         } else {
+    //             console.log(test)
+    //         }
+    //     })
 
-    })
+    // })
 
 
 
