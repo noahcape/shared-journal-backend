@@ -28,8 +28,6 @@ router.post("/new", auth, multipleUpload, async (req, res) => {
         }
     }
 
-    console.log(images, image_keys)
-
     // construct new post
     const newPost = new Post({
         text,
@@ -132,8 +130,6 @@ router.delete("/:id", auth, async (req, res) => {
             }, function (err, data) {
                 if (err) {
                     console.log(err, err.stack)
-                } else {
-                    console.log(data)
                 }
             })
         })
