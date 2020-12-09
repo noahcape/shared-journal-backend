@@ -118,13 +118,15 @@ router.delete("/deleteImage", auth, async (req, res) => {
     }, function (err) {
         err && res.json({ error: err.message })
     })
+
+    res.send("done").end()
 })
 
 // delete by id in query
 router.delete("/:id", auth, async (req, res) => {
     await Post.findById(req.params.id).then(async (post) => {
-        post.image_keys.forEach(key => {
-            s3.deleteObject({
+        post.image_keys.forEach(async key => {
+            await s3.deleteObject({
                 Bucket: "shared-journal",
                 Key: key
             }, function (err, data) {
