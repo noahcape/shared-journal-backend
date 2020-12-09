@@ -128,7 +128,7 @@ router.delete("/:id", auth, async (req, res) => {
         s3.deleteObject({
             Bucket: "shared-journal",
             Key: key
-        }, function (err) {
+        }, function async (err) {
             if (err) {
                 return res.json({ error: err.message }).end()
             } else {
