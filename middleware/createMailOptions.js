@@ -55,7 +55,7 @@ module.exports = async function mailOptions(data) {
                         </div>`
             )
         }).join("")}
-                    ${post.text !== "" ? (`<p style="margin: 10px; font-size: larger;">${post.text}</p>`) : (``)}
+                    ${post.text !== "" ? (`<p style="margin: 10px; font-size: 17px;">${post.text}</p>`) : (``)}
                 </div>
                 <p style="padding: 12px; margin: 8px">${new Date(post.date).getDate()} ~ ${months[post.month]} ~ ${post.year}</p>
             </div>
@@ -64,12 +64,12 @@ module.exports = async function mailOptions(data) {
 
     const html = `<div style="padding: 5px; margin: 0 auto;">
             <h1>Your monthly update from ${data.journal_name}</h1>` + htmlArray.join("") +
-        `<p>To see all photos and past posts go to this journals web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.replace(" ", "_")}</p>
+        `<p>To see all photos and past posts go to this journals web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
         </div>`
 
     to.map(recipient => {
         const mailOptions = {
-            from: "no-reply@hotmail.com",
+            from: "sharedjournal@capefamily.org",
             to: recipient,
             subject,
             html
@@ -82,7 +82,4 @@ module.exports = async function mailOptions(data) {
             console.log('Message sent: %s', info.messageId);
         });
     })
-
-
-    
 }
