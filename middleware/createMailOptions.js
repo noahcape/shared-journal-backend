@@ -7,7 +7,7 @@ module.exports = async function mailOptions(data) {
         post: 425,
         auth: {
             user: "noahcape@gmail.com",
-            pass: "M@rcelle3"
+            pass: "M@rcelle3!"
         }
     })
 

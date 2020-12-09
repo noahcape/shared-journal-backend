@@ -67,7 +67,7 @@ const task = new CronJob('0 0 1 * *', function () {
 }, null, true, 'America/Los_Angeles')
 task.start()
 
-setInterval(() => {console.log("ping")}, 15000)
+setInterval(() => {console.log("ping")}, 180000)
 
 console.log("Must be the first of the month")
 const getUserData = async () => {
