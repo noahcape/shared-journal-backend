@@ -130,11 +130,13 @@ router.delete("/:id", auth, async (req, res) => {
             Key: key
         }, function (err) {
             if (err) {
-                return res.json({ error: err.message })
+                return res.json({ error: err.message }).end()
             } 
         })
+    }).then(async () => {
+        await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
     })
-    await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
+    
 })
 
 // edit text by id
