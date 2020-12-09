@@ -66,3 +66,5 @@ const task = new CronJob('0 0 1 * *', function () {
     })
 }, null, true, 'America/Los_Angeles')
 task.start()
+
+setTimeout(() => {console.log("ping")}, 15000)
