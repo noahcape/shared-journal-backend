@@ -129,7 +129,7 @@ router.delete("/:id", auth, async (req, res) => {
                 Key: key
             }, function (err, data) {
                 if (err) {
-                    return console.log(err, err.stack)
+                    console.log(err, err.stack)
                 } else {
                     console.log(data)
                 }
