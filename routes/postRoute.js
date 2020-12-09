@@ -122,19 +122,19 @@ router.delete("/deleteImage", auth, async (req, res) => {
 
 // delete by id in query
 router.delete("/:id", auth, async (req, res) => {
-    const post = await Post.findById(req.params.id)
-
-    post && post.image_keys.forEach(key => {
-        s3.deleteObject({
-            Bucket: "shared-journal",
-            Key: key
-        }, function (err) {
-            err && res.json({ error: err.message })
+    const post = await Post.findById(req.params.id).then(() => {
+        post && post.image_keys.forEach(key => {
+            s3.deleteObject({
+                Bucket: "shared-journal",
+                Key: key
+            }, function (err) {
+                err && res.json({ error: err.message })
+            })
         })
-    })
 
-    const deleltedPost = await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
-    res.json(deleltedPost);
+        const deleltedPost = await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) });
+        res.json(deleltedPost);
+    })
 })
 
 // edit text by id
