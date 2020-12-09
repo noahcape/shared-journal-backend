@@ -122,10 +122,9 @@ router.delete("/deleteImage", auth, async (req, res) => {
 
 // delete by id in query
 router.delete("/:id", auth, async (req, res) => {
-    console.log("Got it here must not me auth")
     const post = await Post.findById(req.params.id)
 
-    post.image_keys.forEach(key => {
+    post && post.image_keys.forEach(key => {
         s3.deleteObject({
             Bucket: "shared-journal",
             Key: key
