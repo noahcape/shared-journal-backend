@@ -136,7 +136,9 @@ router.delete("/:id", auth, async (req, res) => {
             })
         })
         await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) })
-    })    
+    })  
+    
+    res.json("done").end()
 })
 
 // edit text by id
