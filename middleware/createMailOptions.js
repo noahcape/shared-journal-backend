@@ -7,7 +7,7 @@ module.exports = async function mailOptions(data) {
         post: 425,
         auth: {
             user: "noahcape@gmail.com",
-            pass: "M@rcelle3!"
+            pass: "M@rcelle3"
         }
     })
 
@@ -60,10 +60,10 @@ module.exports = async function mailOptions(data) {
             </div>
         </div>\n`
     )
-        console.log(htmlArray.join(""))
+
     const html = `<div style="padding: 5px; margin: 0 auto;">
             <h1>Your monthly update from ${data.journal_name}</h1>` + htmlArray.join("") +
-        `<p>To see all photos and past posts go to this journals web page @ http://localhost:3000/visitor/${data.journal_name.replace(" ", "_")}</p>
+        `<p>To see all photos and past posts go to this journals web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.replace(" ", "_")}</p>
         </div>`
 
     to.map(recipient => {
