@@ -114,7 +114,7 @@ router.delete("/deleteImage", auth, async (req, res) => {
         Bucket: "shared-journal",
         Key: (req.body.key)
     }, function (err) {
-        err && res.json({ error: err.message })
+        err && console.log(err)
     })
 
     res.send("done").end()
@@ -129,7 +129,7 @@ router.delete("/:id", auth, async (req, res) => {
                 Key: key
             }, function (err, data) {
                 if (err) {
-                    console.log(err, err.stack)
+                    console.log(err)
                 }
             })
         })
