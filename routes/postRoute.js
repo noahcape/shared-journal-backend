@@ -83,10 +83,10 @@ router.get("/getDateOptions", auth, async (req, res) => {
 })
 
 // get by id
-router.get("/getById", auth, async (req, res) => {
-    const post = await Post.findById(req.query.id).catch(err => { console.error(err) });
-    res.json(post);
-})
+// router.get("/getById", auth, async (req, res) => {
+//     const post = await Post.findById(req.query.id).catch(err => { console.error(err) });
+//     res.json(post);
+// })
 
 // delete photo 
 router.delete("/deleteImage", auth, async (req, res) => {
