@@ -110,13 +110,15 @@ router.delete("/deleteImage", auth, async (req, res) => {
 
     await Post.replaceOne({ _id: post._id }, post).catch(err => { console.error(err) })
 
-    await s3.deleteObject({
-        Bucket: "shared-journal",
-        Key: (req.body.key)
-    }, function (err) {
-        err && console.log(err)
+    req.body.keys.map(async key => {
+        await s3.deleteObject({
+            Bucket: "shared-journal",
+            Key: key
+        }, function (err) {
+            err && console.log(err)
+        })
     })
-
+    
     res.send("done").end()
 })
 
