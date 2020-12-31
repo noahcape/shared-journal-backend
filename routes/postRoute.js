@@ -77,7 +77,7 @@ router.get("/", auth, async (req, res) => {
 
 // get posts by date and month
 router.get("/byDate", auth, async (req, res) => {
-    const posts = await Post.find({ user: req.user, month: req.query.month, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) });
+    const posts = await Post.find({ user: req.user, month: req.query.month, year: req.query.year }).sort({ date: -1 }).catch(err => { console.error(err) });
 
     res.json(posts)
 })
@@ -172,17 +172,15 @@ router.put("/edit", auth, async (req, res) => {
 router.get("/getBy", auth, async (req, res) => {
     let posts = []
     if ((!req.query.month && !req.query.year) || (!req.query.year && req.query.month)) {
-        posts = await Post.find({ user: req.user }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: req.user }).sort({ date: -1 }).catch(err => { console.error(err) })
     } else if (!req.query.month && req.query.year) {
-        posts = await Post.find({ user: req.user, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: req.user, year: req.query.year }).sort({ date: -1 }).catch(err => { console.error(err) })
     } else {
         posts = await Post.find({ user: req.user, year: req.query.year, month: req.query.month }).sort({ date: -1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)
 })
-
-// public routes for visitors
 
 // get user id from journal name in header
 router.get("/public_get", async (req, res) => {
@@ -200,11 +198,11 @@ router.get("/public_get", async (req, res) => {
 
     let posts = []
     if ((!req.query.month && !req.query.year) || (!req.query.year && req.query.month)) {
-        posts = await Post.find({ user: userID }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID }).sort({ date: -1 }).catch(err => { console.error(err) })
     } else if (!req.query.month && req.query.year) {
-        posts = await Post.find({ user: userID, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID, year: req.query.year }).sort({ date: -1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({date: -1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)
