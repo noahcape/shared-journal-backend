@@ -4,6 +4,7 @@ const createMailOptions = require("./createMailOptions")
 
 module.exports = async function compileUpdates(users) {
     const monthly_update = {
+        userEmail: '',
         journal_name: "",
         recipients: [],
         posts: []
@@ -15,14 +16,15 @@ module.exports = async function compileUpdates(users) {
     users.forEach(async (user) => {
         let posts = [];
         thisMonth === 0 ? (
-            posts = await Posts.find({ user: user, month: 11, year: thisYear - 1 }).sort({ _id: -1 })
+            posts = await Posts.find({ user: user, month: 11, year: thisYear - 1 }).sort({ date: -1 })
         ) : (
-            posts = await Posts.find({ user: user, month: (thisMonth), year: thisYear }).sort({ _id: -1 })
+            posts = await Posts.find({ user: user, month: (thisMonth), year: thisYear }).sort({ date: -1 })
         )
         
         const settings = await UserSettings.findOne({ user: user })
+        const userEmail = await UserSettings.findOne({ _id: user }).email
 
-
+        monthly_update.userEmail = userEmail
         monthly_update.recipients = settings.recipients
         monthly_update.journal_name = settings.journal_name
 
