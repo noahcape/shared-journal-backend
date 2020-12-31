@@ -48,9 +48,30 @@ router.post("/new", auth, multipleUpload, async (req, res) => {
     }
 })
 
+// edit date of post
+router.put('/edit_date', auth, async (req, res) => {
+    const { dateTime, postId } = req.body
+
+    const post = await Post.findOne({ _id: postId, user: req.user, }).catch(err => { console.log(err) })
+
+    if (!post) {
+        return res.json({ msg: 'No post with that id with that user' }).end()
+    }
+
+    const date = new Date(dateTime)
+
+    const month = date.getMonth()
+    const year = date.getFullYear()
+
+    await Post.findOneAndUpdate({ _id: postId, user: req.user }, { $set: { "date": date, "month": month, "year": year } }).catch(err => { console.log(err) })
+    const editedPost = await Post.findOne({ _id: postId, user: req.user })
+
+    return res.json(editedPost).end()
+})
+
 // get all in most recent order
 router.get("/", auth, async (req, res) => {
-    const posts = await Post.find({ user: req.user }).sort({ _id: -1 }).catch(err => { console.error(err) });
+    const posts = await Post.find({ user: req.user }).sort({ date: -1 }).catch(err => { console.error(err) });
     res.json(posts)
 })
 
@@ -118,7 +139,7 @@ router.delete("/deleteImage", auth, async (req, res) => {
             err && console.log(err)
         })
     })
-    
+
     res.send("done").end()
 })
 
@@ -136,8 +157,8 @@ router.delete("/:id", auth, async (req, res) => {
             })
         })
         await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) })
-    })  
-    
+    })
+
     res.json("done").end()
 })
 
@@ -151,11 +172,11 @@ router.put("/edit", auth, async (req, res) => {
 router.get("/getBy", auth, async (req, res) => {
     let posts = []
     if ((!req.query.month && !req.query.year) || (!req.query.year && req.query.month)) {
-        posts = await Post.find({user: req.user}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: req.user }).sort({ _id: -1 }).catch(err => { console.error(err) })
     } else if (!req.query.month && req.query.year) {
-        posts = await Post.find({user: req.user, year: req.query.year}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: req.user, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({user: req.user, year: req.query.year, month: req.query.month}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: req.user, year: req.query.year, month: req.query.month }).sort({ _id: -1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)
@@ -179,11 +200,11 @@ router.get("/public_get", async (req, res) => {
 
     let posts = []
     if ((!req.query.month && !req.query.year) || (!req.query.year && req.query.month)) {
-        posts = await Post.find({user: userID}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: userID }).sort({ _id: -1 }).catch(err => { console.error(err) })
     } else if (!req.query.month && req.query.year) {
-        posts = await Post.find({user: userID, year: req.query.year}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: userID, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({user: userID, year: req.query.year, month: req.query.month}).sort({ _id: -1 }).catch(err => {console.error(err)})
+        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({ _id: -1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)
@@ -203,7 +224,7 @@ router.get("/public_getDateOptions", async (req, res) => {
 
     const userID = user._id
 
-    const posts = await Post.find({ user: userID}).catch(err => { console.error(err) })
+    const posts = await Post.find({ user: userID }).catch(err => { console.error(err) })
 
     const options = {}
 

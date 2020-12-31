@@ -23,7 +23,7 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 app.use("/posts", require("./routes/postRoute"));
 app.use("/users", require("./routes/userRoute"));
 app.use("/settings", require("./routes/userSettingsRoute"));
-app.use("/stayAwake", require("./routes/stayAwayRoute"));
+app.use("/stayAwake", require("./routes/stayAwakeRoute"));
 
 // set up mongoose
 console.log("Connection to MongoDB");
