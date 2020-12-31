@@ -176,7 +176,7 @@ router.get("/getBy", auth, async (req, res) => {
     } else if (!req.query.month && req.query.year) {
         posts = await Post.find({ user: req.user, year: req.query.year }).sort({ _id: -1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({ user: req.user, year: req.query.year, month: req.query.month }).sort({ _id: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: req.user, year: req.query.year, month: req.query.month }).sort({ date: -1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)
