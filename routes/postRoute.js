@@ -33,7 +33,7 @@ router.post("/new", auth, multipleUpload, async (req, res) => {
         text,
         images: req.files && images,
         image_keys: req.files && image_keys,
-        date: new Date(date),
+        date,
         month,
         year,
         user: req.user
