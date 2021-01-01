@@ -198,11 +198,11 @@ router.get("/public_get", async (req, res) => {
 
     let posts = []
     if ((!req.query.month && !req.query.year) || (!req.query.year && req.query.month)) {
-        posts = await Post.find({ user: userID }).sort({ date: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID }).sort({ date: 1 }).catch(err => { console.error(err) })
     } else if (!req.query.month && req.query.year) {
-        posts = await Post.find({ user: userID, year: req.query.year }).sort({ date: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID, year: req.query.year }).sort({ date: 1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({date: -1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({date: 1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)

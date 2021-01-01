@@ -16,9 +16,9 @@ module.exports = async function compileUpdates(users) {
     users.forEach(async (user) => {
         let posts = [];
         thisMonth === 0 ? (
-            posts = await Posts.find({ user: user, month: 11, year: thisYear - 1 }).sort({ date: -1 })
+            posts = await Posts.find({ user: user, month: 11, year: thisYear - 1 }).sort({ date: 1 })
         ) : (
-            posts = await Posts.find({ user: user, month: (thisMonth), year: thisYear }).sort({ date: -1 })
+            posts = await Posts.find({ user: user, month: (thisMonth), year: thisYear }).sort({ date: 1 })
         )
         
         const settings = await UserSettings.findOne({ user: user })
