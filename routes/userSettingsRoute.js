@@ -64,4 +64,11 @@ router.put("/edit_name", auth, async (req, res) => {
     }
 })
 
+router.put("/clear_recipients", auth, async (req, res) => {
+    await userSettings.findOneAndUpdate({ user: req.user }, { $set: { recipients: [] } })
+
+    const settings = await userSettings.findOne({ user: req.user })
+    return res.json(settings).end()
+})
+
 module.exports = router
