@@ -15,6 +15,7 @@ PostRouter.post('/api/posts/new', auth, multipleUpload, PostContoller.newPost)
 
 // EDIT
 PostRouter.put('/api/posts/edit_post', auth, PostContoller.editPost)
+PostRouter.put('/api/posts/like_post', PostContoller.likePost)
 
 // DELETE
 PostRouter.delete('/api/posts/delete_post', auth, PostContoller.deletePost)

@@ -17,7 +17,7 @@ module.exports = class PostsController {
                 image_keys.push(req.files[i].key)
             }
         }
-        const newPost = new Post({ text, images: req.files && images, image_keys: req.files && image_keys, date, month, year, user: req.user })
+        const newPost = new Post({ text, images: req.files && images, image_keys: req.files && image_keys, date, month, year, user: req.user, likes: [] })
 
         try {
             const savedPost = await newPost.save().catch(err => { console.error(err) });
@@ -39,9 +39,27 @@ module.exports = class PostsController {
         const user = await User.findOne({ "displayName": displayName.trim() }).catch(err => { console.error(err) })
         const userID = user._id
 
-        const posts = Post.find({ user: userID }).sort({ date: 1 }).catch(err => { console.error(err) })
+        const posts = await Post.find({ user: userID }).sort({ date: 1 }).catch(err => { console.error(err) })
 
         res.json(posts)
+    }
+
+    async likePost(req, res) {
+        const { id, message } = req.body
+        const post = await Post.findOne({ _id: id })
+        let likes = post.likes
+        if (!likes) {
+            likes = [message]
+        } else {
+            likes.push(message)
+        }
+
+        if (!post) { return res.status(400).json({ msg: 'Sorry, something went from on our end.' }) }
+
+        await Post.updateOne({ _id: id }, { $set: { likes: likes } }).catch(err => { console.error(err) })
+        const editedPost = await Post.findOne({ _id: id })
+
+        return res.json(editedPost).end()
     }
 
     async deletePost(req, res) {
@@ -64,7 +82,7 @@ module.exports = class PostsController {
 
     async editPost(req, res) {
         const { text, dateTime, keysToDelete, imagesToDelete } = req.body
-    
+
 
         const postToEdit = await Post.findOne({ user: req.user, _id: req.query.id }).catch(err => { console.error(err) })
 

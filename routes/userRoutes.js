@@ -6,6 +6,7 @@ const UsersController = new UserController()
 
 // GET
 UserRouter.get('/api/users/', auth, UsersController.getUser)
+UserRouter.get('/api/users/download_journal', auth, UsersController.downloadJournal)
 
 // POST
 UserRouter.post('/api/users/register', UsersController.registerUser)

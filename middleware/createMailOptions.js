@@ -1,14 +1,15 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs")
+require("dotenv").config()
 
 module.exports = async function mailOptions(data) {
     const transport = nodemailer.createTransport({
-        service: 'Gmail',
+        host: 'smtp.ionos.com',
         port: 587,
-        secure: "false",
+        secure: false,
         auth: {
-            user: "noahcape@gmail.com",
-            pass: "M@rcelle3!"
+          user: process.env.EMAIL,
+          pass: process.env.PASS
         }
     })
 
@@ -37,12 +38,12 @@ module.exports = async function mailOptions(data) {
 
     const html = `<div style="padding: 5px; margin: 0 auto;">
             <h1>Your monthly update from ${data.journal_name}</h1>` + htmlArray.join("") +
-        `<p>To see all photos and past posts go to this journals web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
+        `<p>To see all photos and past posts go to this journal's web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
         </div>`
 
-    to.map(recipient => {
+    to.forEach(recipient => {
         const mailOptions = {
-            from: "sharedjournal@capefamily.org",
+            from: "Shared Journal <sharedjournal@capefamily.org>",
             to: recipient,
             replyTo: data.userEmail,
             subject,

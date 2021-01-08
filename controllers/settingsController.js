@@ -52,9 +52,6 @@ module.exports = class SettingsController {
 
     async editJournalName(req, res) {
         const { newName } = req.body
-        const user = await User.findOne({ _id: req.user })
-        const userSett = await UserSettings.findOne({ user: req.user })
-        console.log(user, userSett)
         if (!await User.findOne({ displayName: newName })) {
             await UserSettings.updateOne({ user: req.user }, { $set: { journal_name: newName } })
             await User.updateOne({ _id: req.user }, { $set: { displayName: newName } })
