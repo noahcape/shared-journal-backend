@@ -81,7 +81,9 @@ module.exports = class PostsController {
     }
 
     async editPost(req, res) {
-        const { text, dateTime, keysToDelete, imagesToDelete } = req.body
+        const { text, dateTime } = req.body
+        const keysToDelete = req.body.keysToDelete.split(",")
+        const imagesToDelete = req.body.imagesToDelete.split(",")
 
 
         const postToEdit = await Post.findOne({ user: req.user, _id: req.query.id }).catch(err => { console.error(err) })
@@ -90,7 +92,7 @@ module.exports = class PostsController {
             return res.json({ msg: 'No post with that id with that user' }).end()
         }
 
-        if (keysToDelete && imagesToDelete) {
+        if (keysToDelete[0] !== '' && imagesToDelete[0] !== '') {
             // delete some images
             const imageKeys = []
             const images = []
@@ -111,9 +113,24 @@ module.exports = class PostsController {
                     Bucket: "shared-journal",
                     Key: key
                 }, function (err) {
-                    err && console.log(err)
+                    err && console.log(err, "Test")
                 })
             })
+        }
+
+        if (req.files) {
+            const images = []
+            const image_keys = []
+
+            if (req.files) {
+                for (let i = 0; i < req.files.length; i++) {
+                    images.push(req.files[i].location)
+                    image_keys.push(req.files[i].key)
+                }
+            }
+
+            postToEdit.images = postToEdit.images.concat(images)
+            postToEdit.image_keys = postToEdit.image_keys.concat(image_keys)
         }
 
         if (text) {
