@@ -54,14 +54,14 @@ const task = new CronJob('0 0 1 * *', function () {
     const getUserData = async () => {
         return await getUsers
     }
-
+    
     getUserData().then(async result => {
         let users = []
-
+    
         result.map(user => {
             users.push(user._id)
         })
-
+    
         try {
             compileUpdates(users)
         } catch (e) {

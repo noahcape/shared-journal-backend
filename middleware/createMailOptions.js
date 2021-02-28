@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-const fs = require("fs")
 require("dotenv").config()
 
 module.exports = async function mailOptions(data) {
@@ -8,8 +7,8 @@ module.exports = async function mailOptions(data) {
         port: 587,
         secure: false,
         auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASS
+            user: process.env.EMAIL,
+            pass: process.env.PASS
         }
     })
 
@@ -41,20 +40,20 @@ module.exports = async function mailOptions(data) {
         `<p>To see all photos and past posts go to this journal's web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
         </div>`
 
-    to.forEach(recipient => {
-        const mailOptions = {
-            from: "Shared Journal <sharedjournal@capefamily.org>",
-            to: recipient,
-            replyTo: data.userEmail,
-            subject,
-            html
-        }
+    const mailOptions = {
+        from: "Shared Journal <sharedjournal@capefamily.org>",
+        to: "sharedjournal@capefamily.org",
+        replyTo: data.userEmail,
+        subject,
+        bcc: to,
+        html
+    }
 
-        transport.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-            console.log('Message sent: %s', info.messageId);
-        });
-    })
+    transport.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log("sent", to)
+        console.log('Message sent: %s', info.messageId);
+    });
 }
