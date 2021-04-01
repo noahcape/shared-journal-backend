@@ -1,5 +1,6 @@
 const Posts = require("../models/postModel")
 const UserSettings = require("../models/userSettingsModel")
+const User = require('../models/userModel')
 const createMailOptions = require("./createMailOptions")
 
 module.exports = async function compileUpdates(users) {
@@ -22,9 +23,9 @@ module.exports = async function compileUpdates(users) {
         )
         
         const settings = await UserSettings.findOne({ user: user })
-        const userEmail = await UserSettings.findOne({ _id: user }).email
+        const userSettings = await User.findOne({ _id: user })
 
-        monthly_update.userEmail = userEmail
+        monthly_update.userEmail = userSettings.email
         monthly_update.recipients = settings.recipients
         monthly_update.journal_name = settings.journal_name
 
