@@ -53,7 +53,6 @@ module.exports = async function mailOptions(data) {
         if (error) {
             return console.log(error);
         }
-        console.log("sent", to)
         console.log('Message sent: %s', info.messageId);
     });
 }
