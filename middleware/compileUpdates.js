@@ -19,13 +19,14 @@ module.exports = async function compileUpdates(users) {
         thisMonth === 0 ? (
             posts = await Posts.find({ user: user, month: 11, year: thisYear - 1 }).sort({ date: 1 })
         ) : (
-            posts = await Posts.find({ user: user, month: (thisMonth), year: thisYear }).sort({ date: 1 })
+            posts = await Posts.find({ user: user, month: (thisMonth - 1), year: thisYear }).sort({ date: 1 })
         )
         
         const settings = await UserSettings.findOne({ user: user })
-        const userSettings = await User.findOne({ _id: user })
+        const journalUser = await User.findOne({ _id: user })
+        const email = journalUser.email
 
-        monthly_update.userEmail = userSettings.email
+        monthly_update.userEmail = email
         monthly_update.recipients = settings.recipients
         monthly_update.journal_name = settings.journal_name
 

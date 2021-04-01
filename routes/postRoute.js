@@ -145,7 +145,7 @@ router.delete("/deleteImage", auth, async (req, res) => {
 
 // delete by id in query
 router.delete("/:id", auth, async (req, res) => {
-    await Post.findById(req.params.id).then(async (post) => {
+    await Post.findOne({ user: req.user, "_id": req.query.id }).then(async (post) => {
         post.image_keys.forEach(async key => {
             await s3.deleteObject({
                 Bucket: "shared-journal",
@@ -156,7 +156,7 @@ router.delete("/:id", auth, async (req, res) => {
                 }
             })
         })
-        await Post.findByIdAndDelete({ _id: req.params.id }).catch(err => { console.error(err) })
+        await Post.findByIdAndDelete({ _id: req.query.id }).catch(err => { console.error(err) })
     })
 
     res.json("done").end()
@@ -202,7 +202,7 @@ router.get("/public_get", async (req, res) => {
     } else if (!req.query.month && req.query.year) {
         posts = await Post.find({ user: userID, year: req.query.year }).sort({ date: 1 }).catch(err => { console.error(err) })
     } else {
-        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({date: 1 }).catch(err => { console.error(err) })
+        posts = await Post.find({ user: userID, year: req.query.year, month: req.query.month }).sort({ date: 1 }).catch(err => { console.error(err) })
     }
 
     res.json(posts)

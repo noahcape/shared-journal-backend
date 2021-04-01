@@ -2,9 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const aws = require('aws-sdk');
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 const CronJob = require("cron").CronJob;
 const fetch = require('node-fetch');
+const PostRouter = require("./routes/postRoutes")
+const SettingsRouter = require("./routes/settingsRoutes")
+const UserRouter = require('./routes/userRoutes')
 require("dotenv").config()
 
 const getUsers = require("./middleware/queryUsers")
@@ -20,9 +22,9 @@ console.log("Starting Server");
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // set up routes
-app.use("/posts", require("./routes/postRoute"));
-app.use("/users", require("./routes/userRoute"));
-app.use("/settings", require("./routes/userSettingsRoute"));
+app.use(PostRouter);
+app.use(UserRouter);
+app.use(SettingsRouter);
 app.use("/stayAwake", require("./routes/stayAwakeRoute"));
 
 // set up mongoose
@@ -73,4 +75,4 @@ setInterval(() => {
     fetch("https://shared-journal-backend.herokuapp.com/stayAwake/", {
         method: "GET"
     })
-}, 50000)
+}, 80000)

@@ -1,14 +1,14 @@
 const nodemailer = require("nodemailer");
-const fs = require("fs")
+require("dotenv").config()
 
 module.exports = async function mailOptions(data) {
     const transport = nodemailer.createTransport({
-        service: 'Gmail',
+        host: 'smtp.ionos.com',
         port: 587,
-        secure: "false",
+        secure: false,
         auth: {
-            user: "noahcape@gmail.com",
-            pass: "M@rcelle3!"
+            user: process.env.EMAIL,
+            pass: process.env.PASS
         }
     })
 
@@ -37,23 +37,23 @@ module.exports = async function mailOptions(data) {
 
     const html = `<div style="padding: 5px; margin: 0 auto;">
             <h1>Your monthly update from ${data.journal_name}</h1>` + htmlArray.join("") +
-        `<p>To see all photos and past posts go to this journals web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
+        `<p>To see all photos and past posts go to this journal's web page @ https://sharedjournal.capefamily.org/visitor/${data.journal_name.split(" ").join("_")}</p>
         </div>`
 
-    to.map(recipient => {
-        const mailOptions = {
-            from: "sharedjournal@capefamily.org",
-            to: recipient,
-            replyTo: data.userEmail,
-            subject,
-            html
-        }
+    const mailOptions = {
+        from: "Shared Journal <sharedjournal@capefamily.org>",
+        to: "sharedjournal@capefamily.org",
+        replyTo: data.userEmail,
+        subject,
+        bcc: to,
+        html
+    }
 
-        transport.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return console.log(error);
-            }
-            console.log('Message sent: %s', info.messageId);
-        });
-    })
+    transport.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log("sent", to)
+        console.log('Message sent: %s', info.messageId);
+    });
 }
