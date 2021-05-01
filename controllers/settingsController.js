@@ -2,6 +2,26 @@ const UserSettings = require("../models/userSettingsModel")
 const User = require("../models/userModel")
 
 module.exports = class SettingsController {
+    async unsubscribe(req, res) {
+        const { journal_name, email } = req.query
+
+        if (!email) return res.status(400).send('email/not/found')
+
+        let displayName = ""
+        journal_name.split("_").map(name => { displayName += name + " " })
+    
+        const settings = await UserSettings.findOne({ journal_name: displayName.trim() })
+        
+        if (!settings) return res.status(400).send('unknown/journal')
+        if (!settings.recipients.includes(email)) return res.status(400).send('not/subscribed')
+
+        const index = settings.recipients.indexOf(email)
+        settings.recipients.splice(index, 1)
+        await settings.save()
+
+        res.send(settings.recipients)
+    }
+
     async postSettings(req, res) {
         const { displayName, recipients, user } = req.body
 

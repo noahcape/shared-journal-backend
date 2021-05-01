@@ -16,6 +16,7 @@ SettingsRouter.put('/api/settings/bulk_add_recipients', auth, UserSettingsContro
 SettingsRouter.put('/api/settings/edit_journal_name', auth, UserSettingsController.editJournalName)
 SettingsRouter.put('/api/settings/delete_recipient', auth, UserSettingsController.deleteRecipient)
 SettingsRouter.put('/api/settings/clear_recipients', auth, UserSettingsController.clearRecipeints)
+SettingsRouter.put('/api/settings/unsubscribe', UserSettingsController.unsubscribe)
 
 module.exports = SettingsRouter
 
