@@ -12,6 +12,9 @@ module.exports = async function mailOptions(data) {
         }
     })
 
+    if (data.recipients.length === 0) {
+        return
+    }
 
     const to = data.recipients
     const subject = `${data.journal_name} monthly update`

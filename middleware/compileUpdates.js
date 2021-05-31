@@ -25,14 +25,24 @@ module.exports = async function compileUpdates(users) {
             journal_name: settings.journal_name,
             posts: posts,
         }
-
-        if (monthly_update.posts.length > 0) {
-            createMailOptions(monthly_update)
-        }
         
+        // if there have been posts this month
+        if (monthly_update.posts.length > 0) {
+            const emailListLength = monthly_update.recipients.length
+            const subListLength = Math.round(emailListLength / 25)
 
+            // send email ever 20 minutes
+            const TWENTY_MINUTES = 1200000
 
+            // send emails 20 times
+            for (let i = 0; i <= 24; i++) {
+                const subList = monthly_update.recipients.slice(i * subListLength, (i + 1) * subListLength)
+                await new Promise((resolve) => setTimeout(() => {
+                    createMailOptions({ ...monthly_update, recipients: subList })
+                    resolve()
+                }, TWENTY_MINUTES))
+            }
+        }
     })
-
 }
 
