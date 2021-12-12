@@ -1,16 +1,13 @@
-const Users = require("../models/userModel")
+const Users = require('../models/userModel');
 
 const getUsers = async () => {
-    const users = await Users.find().then(result => result)
+  const users = await Users.find().then((result) => result);
 
-    let userIds = []
+  let userIds = [];
 
-    userIds = users.map(user => {
-        return user
-    })
+  userIds = users.map((user) => user);
 
-    return userIds;
-}
+  return userIds;
+};
 
-
-module.exports = getUsers()
+module.exports = getUsers();
