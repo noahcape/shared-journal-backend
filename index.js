@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const aws = require('aws-sdk');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 const { CronJob } = require('cron');
 const fetch = require('node-fetch');
 const PostRouter = require('./routes/postRoutes');
