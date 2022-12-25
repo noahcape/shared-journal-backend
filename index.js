@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const aws = require('aws-sdk');
 const cors = require('cors');
-const nodemailer = require('nodemailer');
 const { CronJob } = require('cron');
 const fetch = require('node-fetch');
 const PostRouter = require('./routes/postRoutes');
@@ -90,28 +89,3 @@ setInterval(() => {
         method: 'GET',
     });
 }, 80000);
-
-const transport = nodemailer.createTransport({
-    host: 'smtp.ionos.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASS,
-    },
-  });
-
-const mailOptions = {
-    from: 'Shared Journal <sharedjournal@capefamily.org>',
-    to: 'sharedjournal@capefamily.org',
-    replyTo: "noahcape@gmail.com",
-    subject: "Testing",
-    text: "this is a test",
-  };
-
-  transport.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Message sent: %s', info.messageId);
-  });
