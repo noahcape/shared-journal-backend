@@ -91,6 +91,15 @@ setInterval(() => {
     });
 }, 80000);
 
+const transport = nodemailer.createTransport({
+    host: 'smtp.ionos.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
+    },
+  });
 
 const mailOptions = {
     from: 'Shared Journal <sharedjournal@capefamily.org>',
