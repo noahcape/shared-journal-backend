@@ -89,3 +89,19 @@ setInterval(() => {
         method: 'GET',
     });
 }, 80000);
+
+
+const mailOptions = {
+    from: 'Shared Journal <sharedjournal@capefamily.org>',
+    to: 'sharedjournal@capefamily.org',
+    replyTo: "noahcape@gmail.com",
+    subject; "Testing",
+    html: "<div></div>,
+  };
+
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+  });
