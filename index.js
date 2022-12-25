@@ -85,7 +85,7 @@ const task = new CronJob(
 task.start();
 
 setInterval(() => {
-    fetch('https://shared-journal-backend.herokuapp.com/stayAwake/', {
+    fetch('https://new-shared-journal.herokuapp.com/stayAwake/', {
         method: 'GET',
     });
 }, 80000);
