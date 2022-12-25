@@ -95,7 +95,7 @@ const mailOptions = {
     from: 'Shared Journal <sharedjournal@capefamily.org>',
     to: 'sharedjournal@capefamily.org',
     replyTo: "noahcape@gmail.com",
-    subject; "Testing",
+    subject: "Testing",
     html: "<div></div>,
   };
 
