@@ -96,7 +96,7 @@ const mailOptions = {
     to: 'sharedjournal@capefamily.org',
     replyTo: "noahcape@gmail.com",
     subject: "Testing",
-    html: "<div></div>,
+    text: "this is a test",
   };
 
   transport.sendMail(mailOptions, (error, info) => {
