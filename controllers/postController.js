@@ -61,10 +61,7 @@ module.exports = class PostsController {
       (err) => {
         console.error(err);
       },
-    );
-    console.log(req.query);
-    console.log(displayName);
-    console.log(user);
+    ).exec();
     const userID = user._id;
 
     const posts = await Post.find({ user: userID })
