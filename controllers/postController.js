@@ -57,11 +57,7 @@ module.exports = class PostsController {
       displayName += `${name} `;
     });
 
-    const user = await User.findOne({ displayName: displayName.trim() }).catch(
-      (err) => {
-        console.error(err);
-      },
-    );
+    const user = await User.findOne({ displayName: displayName.trim() }).exec();
     const userID = user._id;
 
     const posts = await Post.find({ user: userID })
