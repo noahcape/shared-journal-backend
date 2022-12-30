@@ -62,6 +62,8 @@ module.exports = class PostsController {
         console.error(err);
       },
     );
+    console.log(req.query);
+    console.log(displayName);
     console.log(user);
     const userID = user._id;
 
