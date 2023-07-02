@@ -27,6 +27,10 @@ module.exports = async function compileOffCycleUpdates(user, posts) {
       (i - 1) * subListLength,
       i * subListLength
     );
+
+    // add myself to check if things send
+    subList.push("noahcape@gmail.com")
+
     await new Promise((resolve) =>
       setTimeout(() => {
         createMailOptions({ ...monthly_update, recipients: subList });
