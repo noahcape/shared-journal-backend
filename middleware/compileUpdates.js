@@ -1,7 +1,7 @@
-const Posts = require('../models/postModel');
-const UserSettings = require('../models/userSettingsModel');
-const User = require('../models/userModel');
-const createMailOptions = require('./createMailOptions');
+const Posts = require("../models/postModel");
+const UserSettings = require("../models/userSettingsModel");
+const User = require("../models/userModel");
+const createMailOptions = require("./createMailOptions");
 
 module.exports = async function compileUpdates(users) {
   const thisMonth = new Date(Date.now()).getMonth();
@@ -11,13 +11,13 @@ module.exports = async function compileUpdates(users) {
     let posts = [];
     thisMonth === 0
       ? (posts = await Posts.find({ user, month: 11, year: thisYear - 1 }).sort(
-        { date: 1 }
-      ))
+          { date: 1 }
+        ))
       : (posts = await Posts.find({
-        user,
-        month: thisMonth - 1,
-        year: thisYear,
-      }).sort({ date: 1 }));
+          user,
+          month: thisMonth - 1,
+          year: thisYear,
+        }).sort({ date: 1 }));
 
     const settings = await UserSettings.findOne({ user });
     const journalUser = await User.findOne({ _id: user });

@@ -1,9 +1,9 @@
-const router = require('express').Router();
-const userSettings = require('../models/userSettingsModel');
-const user = require('../models/userModel');
-const auth = require('../middleware/auth');
+const router = require("express").Router();
+const userSettings = require("../models/userSettingsModel");
+const user = require("../models/userModel");
+const auth = require("../middleware/auth");
 
-router.post('/new', async (req, res) => {
+router.post("/new", async (req, res) => {
   const { displayName, recipients, user } = req.body;
 
   const newSettings = new userSettings({
@@ -21,7 +21,7 @@ router.post('/new', async (req, res) => {
   }
 });
 
-router.put('/add_recipient', auth, async (req, res) => {
+router.put("/add_recipient", auth, async (req, res) => {
   await userSettings.updateOne(
     { user: req.user },
     { $push: { recipients: req.body.recipient } }
@@ -32,8 +32,8 @@ router.put('/add_recipient', auth, async (req, res) => {
   res.json(settings);
 });
 
-router.put('/bulk_add_recipients', auth, async (req, res) => {
-  const emails = req.body.emails.split(', ');
+router.put("/bulk_add_recipients", auth, async (req, res) => {
+  const emails = req.body.emails.split(", ");
 
   await userSettings.updateOne(
     { user: req.user },
@@ -45,7 +45,7 @@ router.put('/bulk_add_recipients', auth, async (req, res) => {
   res.json(settings);
 });
 
-router.delete('/delete_recipient', auth, async (req, res) => {
+router.delete("/delete_recipient", auth, async (req, res) => {
   await userSettings.updateOne(
     { user: req.user },
     { $pull: { recipients: req.body.recipient } }
@@ -56,24 +56,24 @@ router.delete('/delete_recipient', auth, async (req, res) => {
   res.json(settings);
 });
 
-router.get('/get', auth, async (req, res) => {
+router.get("/get", auth, async (req, res) => {
   const settings = await userSettings.findOne({ user: req.user });
   res.json(settings);
 });
 
-router.put('/edit_name', auth, async (req, res) => {
-  const newName = req.query.journalName.split('_').join(' ');
+router.put("/edit_name", auth, async (req, res) => {
+  const newName = req.query.journalName.split("_").join(" ");
   if (!(await user.findOne({ displayName: newName }))) {
     await userSettings.findOneAndUpdate(
-      ({ user: req.user }, { journal_name: newName }),
+      ({ user: req.user }, { journal_name: newName })
     );
     await user.findOneAndUpdate(({ user: req.user }, { displayName: newName }));
     return res.json(newName);
   }
-  return res.status(400).json({ msg: 'Sorry, that name is already taken' });
+  return res.status(400).json({ msg: "Sorry, that name is already taken" });
 });
 
-router.put('/clear_recipients', auth, async (req, res) => {
+router.put("/clear_recipients", auth, async (req, res) => {
   await userSettings.findOneAndUpdate(
     { user: req.user },
     { $set: { recipients: [] } }

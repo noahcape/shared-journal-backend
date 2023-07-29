@@ -1,38 +1,38 @@
-const router = require('express').Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
-const auth = require('../middleware/auth');
-require('dotenv').config();
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/userModel");
+const auth = require("../middleware/auth");
+require("dotenv").config();
 
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { email, password, passwordCheck, displayName } = req.body;
 
     // validation
     if (!email || !password || !passwordCheck || !displayName)
-      return res.status(400).json({ msg: 'Not all fields have been entered' });
+      return res.status(400).json({ msg: "Not all fields have been entered" });
 
     if (password.length < 5) {
       return res
         .status(400)
-        .json({ msg: 'Password needs to be at least 5 character long' });
+        .json({ msg: "Password needs to be at least 5 character long" });
     }
 
     if (password !== passwordCheck) {
       return res
         .status(400)
-        .json({ msg: 'Enter the same password twice for verification' });
+        .json({ msg: "Enter the same password twice for verification" });
     }
 
     if (await User.findOne({ displayName })) {
-      return res.status(400).json({ msg: 'Sorry, that name is already taken' });
+      return res.status(400).json({ msg: "Sorry, that name is already taken" });
     }
 
     if (await User.findOne({ email })) {
       return res
         .status(400)
-        .json({ msg: 'Account with this email already exists' });
+        .json({ msg: "Account with this email already exists" });
     }
 
     const salt = await bcrypt.genSalt();
@@ -51,24 +51,24 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     // validate
     if (!email || !password)
-      return res.status(400).json({ msg: 'Not all fields have been entered' });
+      return res.status(400).json({ msg: "Not all fields have been entered" });
 
     const user = await User.findOne({ email });
 
     if (!user) {
       return res
         .status(400)
-        .json({ msg: 'No account with this email has been registered' });
+        .json({ msg: "No account with this email has been registered" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_PASSWORD);
 
@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.delete('/delete', auth, async (req, res) => {
+router.delete("/delete", auth, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.user);
     res.json(deletedUser);
@@ -93,9 +93,9 @@ router.delete('/delete', auth, async (req, res) => {
   }
 });
 
-router.post('/tokenIsValid', async (req, res) => {
+router.post("/tokenIsValid", async (req, res) => {
   try {
-    const token = req.header('x-auth-token');
+    const token = req.header("x-auth-token");
 
     if (!token) return res.json(false);
 
@@ -113,8 +113,12 @@ router.post('/tokenIsValid', async (req, res) => {
   }
 });
 
-router.get('/', auth, async (req, res) => {
+router.get("/", auth, async (req, res) => {
   const user = await User.findById(req.user);
+
+  if (!user) {
+    return res.status(500).json({ error: "cannot find user" });
+  }
 
   res.json({ journalName: user.displayName, id: user._id });
 });

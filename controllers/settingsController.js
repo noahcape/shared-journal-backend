@@ -1,14 +1,14 @@
-const UserSettings = require('../models/userSettingsModel');
-const User = require('../models/userModel');
+const UserSettings = require("../models/userSettingsModel");
+const User = require("../models/userModel");
 
 module.exports = class SettingsController {
   async unsubscribe(req, res) {
     const { journal_name, email } = req.query;
 
-    if (!email) return res.status(400).send('email/not/found');
+    if (!email) return res.status(400).send("email/not/found");
 
-    let displayName = '';
-    journal_name.split('_').map((name) => {
+    let displayName = "";
+    journal_name.split("_").map((name) => {
       displayName += `${name} `;
     });
 
@@ -16,9 +16,9 @@ module.exports = class SettingsController {
       journal_name: displayName.trim(),
     });
 
-    if (!settings) return res.status(400).send('unknown/journal');
+    if (!settings) return res.status(400).send("unknown/journal");
     if (!settings.recipients.includes(email)) {
-      return res.status(400).send('not/subscribed');
+      return res.status(400).send("not/subscribed");
     }
 
     const index = settings.recipients.indexOf(email);
@@ -54,7 +54,7 @@ module.exports = class SettingsController {
   async addRecipient(req, res) {
     await UserSettings.updateOne(
       { user: req.user },
-      { $push: { recipients: req.body.recipient } },
+      { $push: { recipients: req.body.recipient } }
     );
     const settings = await UserSettings.findOne({ user: req.user });
 
@@ -62,7 +62,7 @@ module.exports = class SettingsController {
   }
 
   async bulkAddRecipient(req, res) {
-    const recipients = req.body.recipients.split(',');
+    const recipients = req.body.recipients.split(",");
     const tempRecipients = [];
 
     const settingsToBeEdited = await UserSettings.findOne({ user: req.user });
@@ -75,7 +75,7 @@ module.exports = class SettingsController {
 
     await UserSettings.updateOne(
       { user: req.user },
-      { $push: { recipients: tempRecipients } },
+      { $push: { recipients: tempRecipients } }
     );
     const settings = await UserSettings.findOne({ user: req.user });
 
@@ -96,7 +96,7 @@ module.exports = class SettingsController {
       const newSettings = await UserSettings.findOne({ user: req.user });
       return res.json(newSettings);
     }
-    return res.status(400).json({ msg: 'Sorry, that name is already taken' });
+    return res.status(400).json({ msg: "Sorry, that name is already taken" });
   }
 
   async deleteRecipient(req, res) {
@@ -113,7 +113,7 @@ module.exports = class SettingsController {
 
     await UserSettings.updateOne(
       { user: req.user },
-      { $set: { recipients: recipientList } },
+      { $set: { recipients: recipientList } }
     );
     const settings = await UserSettings.findOne({ user: req.user });
 
@@ -123,7 +123,7 @@ module.exports = class SettingsController {
   async clearRecipeints(req, res) {
     await UserSettings.findOneAndUpdate(
       { user: req.user },
-      { $set: { recipients: [] } },
+      { $set: { recipients: [] } }
     );
 
     const settings = await UserSettings.findOne({ user: req.user });

@@ -1,25 +1,40 @@
-const jwt = require("jsonwebtoken")
-const bcrypt = require("bcryptjs")
-const User = require("../models/userModel")
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/userModel");
+require("dotenv").config();
 
 module.exports = class UserController {
   async registerUser(req, res) {
     try {
-      const {
-        email, password, passwordCheck, displayName
-      } = req.body;
+      const { email, password, passwordCheck, displayName } = req.body;
 
       // validation
-      if (!email || !password || !passwordCheck || !displayName) return res.status(400).json({ msg: 'Not all fields have been entered' });
+      if (!email || !password || !passwordCheck || !displayName)
+        return res
+          .status(400)
+          .json({ msg: "Not all fields have been entered" });
 
-      if (password.length < 5) return res.status(400).json({ msg: 'Password needs to be at least 5 character long' });
+      if (password.length < 5)
+        return res
+          .status(400)
+          .json({ msg: "Password needs to be at least 5 character long" });
 
-      if (password !== passwordCheck) return res.status(400).json({ msg: 'Enter the same password twice for verification' });
+      if (password !== passwordCheck)
+        return res
+          .status(400)
+          .json({ msg: "Enter the same password twice for verification" });
 
-      if (await User.findOne({ displayName })) { return res.status(400).json({ msg: 'Sorry, that name is already taken' }); }
+      if (await User.findOne({ displayName })) {
+        return res
+          .status(400)
+          .json({ msg: "Sorry, that name is already taken" });
+      }
 
-      if (await User.findOne({ email })) { return res.status(400).json({ msg: 'Account with this email already exists' }); }
+      if (await User.findOne({ email })) {
+        return res
+          .status(400)
+          .json({ msg: "Account with this email already exists" });
+      }
 
       const salt = await bcrypt.genSalt();
       const paswordHash = await bcrypt.hash(password, salt);
@@ -32,7 +47,6 @@ module.exports = class UserController {
 
       await newUser.save();
       res.json({ displayName });
-
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -42,15 +56,21 @@ module.exports = class UserController {
     try {
       const { email, password } = req.body;
       // validate
-      if (!email || !password) return res.status(400).json({ msg: 'Not all fields have been entered' });
+      if (!email || !password)
+        return res
+          .status(400)
+          .json({ msg: "Not all fields have been entered" });
 
       const user = await User.findOne({ email });
 
-      if (!user) return res.status(400).json({ msg: 'No account with this email has been registered' });
+      if (!user)
+        return res
+          .status(400)
+          .json({ msg: "No account with this email has been registered" });
 
       const isMatch = await bcrypt.compare(password, user.password);
 
-      if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+      if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
       const token = jwt.sign({ id: user._id }, process.env.JWT_PASSWORD);
 
@@ -77,7 +97,7 @@ module.exports = class UserController {
 
   async isTokenValid(req, res) {
     try {
-      const token = req.header('x-auth-token');
+      const token = req.header("x-auth-token");
 
       if (!token) return res.json(false);
 
@@ -90,7 +110,6 @@ module.exports = class UserController {
       if (!user) return res.json(false);
 
       return res.json(true);
-
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -98,21 +117,34 @@ module.exports = class UserController {
 
   async getUser(req, res) {
     const user = await User.findById(req.user);
+
+    if (!user) return res.status(500).json({ msg: "No user with that id" });
+
     res.json({ journalName: user.displayName, id: user._id });
   }
 
   async downloadJournal(req, res) {
-    const { user } = req
+    const { user } = req;
 
-    if (!await User.findById(user)) { return res.status(400).json({ msg: 'No user with that is could be found in our system' }).end(); }
-
-    res.status(200).download('/Users/noahcape/Desktop/Personal Projects/shared-journal-backend/email.html', 'journal.html', (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('Sent');
-      }
+    if (!(await User.findById(user))) {
+      return res
+        .status(400)
+        .json({ msg: "No user with that is could be found in our system" })
+        .end();
     }
-    )
+
+    res
+      .status(200)
+      .download(
+        "/Users/noahcape/Desktop/Personal Projects/shared-journal-backend/email.html",
+        "journal.html",
+        (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Sent");
+          }
+        }
+      );
   }
 };

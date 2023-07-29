@@ -1,17 +1,15 @@
 /* eslint-disable prettier/prettier */
-const mongoose = require('mongoose');
-const aws = require('aws-sdk');
-const Post = require('../models/postModel');
-const User = require('../models/userModel');
+const mongoose = require("mongoose");
+const aws = require("aws-sdk");
+const Post = require("../models/postModel");
+const User = require("../models/userModel");
 
 const s3 = new aws.S3();
-mongoose.set('useFindAndModify', false);
+mongoose.set("useFindAndModify", false);
 
 module.exports = class PostsController {
   async newPost(req, res) {
-    const {
-      text, date, month, year,
-    } = req.body;
+    const { text, date, month, year } = req.body;
     const images = [];
     const image_keys = [];
 
@@ -52,12 +50,17 @@ module.exports = class PostsController {
   }
 
   async publicGet(req, res) {
-    let displayName = '';
-    req.query.journal_name.split('_').map((name) => {
+    let displayName = "";
+    req.query.journal_name.split("_").map((name) => {
       displayName += `${name} `;
     });
 
     const user = await User.findOne({ displayName: displayName.trim() }).exec();
+
+    if (!user) {
+      return res.status(500).json({ error: "cannot find user" });
+    }
+
     const userID = user._id;
 
     const posts = await Post.find({ user: userID })
@@ -82,7 +85,7 @@ module.exports = class PostsController {
     if (!post) {
       return res
         .status(400)
-        .json({ msg: 'Sorry, something went from on our end.' });
+        .json({ msg: "Sorry, something went from on our end." });
     }
 
     await Post.updateOne({ _id: id }, { $set: { likes } }).catch((err) => {
@@ -95,18 +98,18 @@ module.exports = class PostsController {
 
   async deletePost(req, res) {
     Post.findOne({ user: req.user, _id: req.query.id }).then(async (post) => {
-      post.image_keys
-        && post.image_keys.forEach(async (key) => {
+      post.image_keys &&
+        post.image_keys.forEach(async (key) => {
           await s3.deleteObject(
             {
-              Bucket: 'shared-journal',
+              Bucket: "shared-journal",
               Key: key,
             },
             (err, data) => {
               if (err) {
                 console.log(err);
               }
-            },
+            }
           );
         });
       await Post.findByIdAndDelete({ _id: req.query.id }).catch((err) => {
@@ -119,8 +122,8 @@ module.exports = class PostsController {
 
   async editPost(req, res) {
     const { text, dateTime } = req.body;
-    const keysToDelete = req.body.keysToDelete.split(',');
-    const imagesToDelete = req.body.imagesToDelete.split(',');
+    const keysToDelete = req.body.keysToDelete.split(",");
+    const imagesToDelete = req.body.imagesToDelete.split(",");
 
     const postToEdit = await Post.findOne({
       user: req.user,
@@ -130,10 +133,10 @@ module.exports = class PostsController {
     });
 
     if (!postToEdit) {
-      return res.json({ msg: 'No post with that id with that user' }).end();
+      return res.json({ msg: "No post with that id with that user" }).end();
     }
 
-    if (keysToDelete[0] !== '' && imagesToDelete[0] !== '') {
+    if (keysToDelete[0] !== "" && imagesToDelete[0] !== "") {
       // delete some images
       const imageKeys = [];
       const images = [];
@@ -156,12 +159,12 @@ module.exports = class PostsController {
       keysToDelete.map(async (key) => {
         await s3.deleteObject(
           {
-            Bucket: 'shared-journal',
+            Bucket: "shared-journal",
             Key: key,
           },
           (err) => {
-            err && console.log(err, 'Test');
-          },
+            err && console.log(err, "Test");
+          }
         );
       });
     }

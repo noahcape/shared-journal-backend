@@ -1,9 +1,9 @@
-const Post = require('../models/postModel');
-const compileOffCycleUpdates = require('../middleware/compileOffCycleUpdates')
+const Post = require("../models/postModel");
+const compileOffCycleUpdates = require("../middleware/compileOffCycleUpdates");
 
 module.exports = class ClientOperationsController {
   async sendOffCycle(req, res) {
-    const { month } = req.query
+    const { month } = req.query;
     const thisYear = new Date(Date.now()).getFullYear();
 
     // check if this user even has posts to send from this month
@@ -11,12 +11,12 @@ module.exports = class ClientOperationsController {
       user: req.user,
       month,
       year: thisYear,
-    }).sort({ date: 1 })
+    }).sort({ date: 1 });
 
     // if there are no posts throw error
-    if (posts.length == 0) return res.send({ result: 'no posts to send' })
-    else res.send({ result: 'success' })
+    if (posts.length == 0) return res.send({ result: "no posts to send" });
+    else res.send({ result: "success" });
 
-    compileOffCycleUpdates(req.user, posts)
+    compileOffCycleUpdates(req.user, posts);
   }
-}
+};

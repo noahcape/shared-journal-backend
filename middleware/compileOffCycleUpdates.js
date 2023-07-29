@@ -1,9 +1,8 @@
-const UserSettings = require('../models/userSettingsModel');
-const User = require('../models/userModel');
-const createMailOptions = require('./createMailOptions');
+const UserSettings = require("../models/userSettingsModel");
+const User = require("../models/userModel");
+const createMailOptions = require("./createMailOptions");
 
 module.exports = async function compileOffCycleUpdates(user, posts) {
-
   const settings = await UserSettings.findOne({ user });
   const journalUser = await User.findOne({ _id: user });
   const { email } = journalUser;
@@ -29,7 +28,7 @@ module.exports = async function compileOffCycleUpdates(user, posts) {
     );
 
     // add myself to check if things send
-    subList.push("noahcape@gmail.com")
+    subList.push("noahcape@gmail.com");
 
     await new Promise((resolve) =>
       setTimeout(() => {
@@ -39,5 +38,5 @@ module.exports = async function compileOffCycleUpdates(user, posts) {
     );
   }
 
-  return { result: 'success' }
-}
+  return { result: "success" };
+};

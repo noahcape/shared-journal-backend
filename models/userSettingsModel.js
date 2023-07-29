@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSettingsSchema = new mongoose.Schema({
   journal_name: { type: String },
@@ -6,4 +6,4 @@ const userSettingsSchema = new mongoose.Schema({
   user: { type: String, required: true },
 });
 
-module.exports = mongoose.model('settings', userSettingsSchema);
+module.exports = mongoose.model("settings", userSettingsSchema);
