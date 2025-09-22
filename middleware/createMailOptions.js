@@ -3,12 +3,12 @@ require("dotenv").config();
 
 module.exports = async function mailOptions(data) {
   const transport = nodemailer.createTransport({
-    host: "smtp.ionos.com",
+    host: "email-smtp.us-west-2.amazonaws.com",
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASS,
+      user: "AKIAW6EVFSCXSBK27YXP",
+      pass: "BBocx9GB2no4FUomIN63dembD4Jl6UjBk4fGXG1G5ejZ",
     },
   });
 
@@ -70,8 +70,8 @@ module.exports = async function mailOptions(data) {
         </div>`;
 
   const mailOptions = {
-    from: "Shared Journal <sharedjournal@capefamily.org>",
-    to: "sharedjournal@capefamily.org",
+    from: process.env.SES_FROM_EMAIL || "Shared Journal <sharedjournal@capefamily.org>",
+    to: process.env.SES_FROM_EMAIL || "sharedjournal@capefamily.org",
     replyTo: data.userEmail,
     subject,
     bcc: to,
