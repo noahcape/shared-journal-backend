@@ -7,8 +7,8 @@ module.exports = async function mailOptions(data) {
     port: 587,
     secure: false,
     auth: {
-      user: "AKIAW6EVFSCXSBK27YXP",
-      pass: "BBocx9GB2no4FUomIN63dembD4Jl6UjBk4fGXG1G5ejZ",
+      user: process.env.SES_SMTP_USERNAME,
+      pass: process.env.SES_SMTP_PASSWORD,
     },
   });
 
