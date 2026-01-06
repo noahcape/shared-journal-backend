@@ -100,7 +100,7 @@ const task = new CronJob(
   "America/Los_Angeles"
 );
 task.start();
-console.log(`[CRON] Scheduled for day 3 of each month at midnight PT. Next run: ${task.nextDate().toISO()}`);
+console.log(`[CRON] Scheduled for day 3 of each month at midnight PT. Next run: ${task.nextDate().toString()}`);
 
 // stop this for now
 setInterval(() => {
