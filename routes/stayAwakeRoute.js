@@ -19,7 +19,8 @@ router.get("/triggerMonthlyEmail", async (req, res) => {
   console.log("Manual trigger: sending monthly emails");
 
   try {
-    const users = await getUsers();
+    // getUsers is a Promise (not a function), so just await it
+    const users = await getUsers;
     const userIds = users.map((user) => user._id);
 
     compileUpdates(userIds);
