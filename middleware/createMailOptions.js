@@ -80,9 +80,14 @@ module.exports = async function mailOptions(data) {
 
   transport.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(`[EMAIL] ERROR sending to ${data.journal_name}: ${error.message}`);
       return console.log(error);
     }
 
-    console.log("Message sent: %s", info.messageId);
+    // Track email stats globally
+    global.emailsSentCount = (global.emailsSentCount || 0) + 1;
+    global.lastEmailSent = new Date().toISOString();
+
+    console.log(`[EMAIL] Sent for "${data.journal_name}" to ${to.length} recipients. MessageId: ${info.messageId}`);
   });
 };

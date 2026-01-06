@@ -58,31 +58,49 @@ aws.config.update(
 
 console.log("AWS set up");
 
+// Track last cron execution for monitoring
+global.lastCronRun = null;
+global.lastCronStatus = null;
+global.lastCronUserCount = null;
+
 const task = new CronJob(
-  "0 0 1 * *",
-  () => {
-    console.log("Must be the first of the month");
-    const getUserData = async () => await getUsers;
+  "0 0 3 * *",
+  async () => {
+    const timestamp = new Date().toISOString();
+    console.log(`[CRON] ========================================`);
+    console.log(`[CRON] Monthly email job started at ${timestamp}`);
+    console.log(`[CRON] Timezone: America/Los_Angeles (Day 3 of month)`);
 
-    getUserData().then(async (result) => {
-      const users = [];
+    global.lastCronRun = timestamp;
+    global.lastCronStatus = "started";
 
-      result.map((user) => {
-        users.push(user._id);
-      });
+    try {
+      const users = await getUsers;
+      const userIds = users.map((user) => user._id);
 
-      try {
-        compileUpdates(users);
-      } catch (e) {
-        console.error(e);
-      }
-    });
+      console.log(`[CRON] Found ${userIds.length} users to process`);
+      global.lastCronStatus = `processing ${userIds.length} users`;
+      global.lastCronUserCount = userIds.length;
+
+      compileUpdates(userIds);
+
+      console.log(`[CRON] compileUpdates called successfully`);
+      console.log(`[CRON] Emails will be sent in batches over ~5 hours`);
+      global.lastCronStatus = `triggered for ${userIds.length} users`;
+    } catch (e) {
+      console.error(`[CRON] ERROR: ${e.message}`);
+      console.error(e);
+      global.lastCronStatus = `error: ${e.message}`;
+    }
+
+    console.log(`[CRON] ========================================`);
   },
   null,
   true,
   "America/Los_Angeles"
 );
 task.start();
+console.log(`[CRON] Scheduled for day 3 of each month at midnight PT. Next run: ${task.nextDate().toISO()}`);
 
 // stop this for now
 setInterval(() => {

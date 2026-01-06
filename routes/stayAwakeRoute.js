@@ -7,6 +7,25 @@ router.get("/", (req, res) => {
   res.send("stay awake");
 });
 
+// Status endpoint to check cron job health
+router.get("/status", (req, res) => {
+  const { secret } = req.query;
+
+  if (secret !== process.env.JWT_PASSWORD) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  res.json({
+    serverTime: new Date().toISOString(),
+    lastCronRun: global.lastCronRun || "never (since last restart)",
+    lastCronStatus: global.lastCronStatus || "not run yet",
+    lastCronUserCount: global.lastCronUserCount || 0,
+    emailsSentCount: global.emailsSentCount || 0,
+    lastEmailSent: global.lastEmailSent || "none",
+    cronSchedule: "0 0 3 * * (Day 3 of each month, midnight PT)"
+  });
+});
+
 // Manual trigger for monthly email send
 router.get("/triggerMonthlyEmail", async (req, res) => {
   const { secret } = req.query;
