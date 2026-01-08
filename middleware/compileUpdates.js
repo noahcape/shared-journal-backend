@@ -55,6 +55,8 @@ module.exports = async function compileUpdates(users) {
           (i - 1) * subListLength,
           i * subListLength
         );
+        // First batch sends immediately, rest are delayed
+        const delay = i === 1 ? 0 : FIFTEEN_MINUTES;
         await new Promise((resolve) =>
           setTimeout(() => {
             if (subList.length > 0) {
@@ -62,7 +64,7 @@ module.exports = async function compileUpdates(users) {
               createMailOptions({ ...monthly_update, recipients: subList });
             }
             resolve();
-          }, FIFTEEN_MINUTES)
+          }, delay)
         );
       }
 
