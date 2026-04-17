@@ -11,8 +11,10 @@
 
 require("dotenv").config();
 const mongoose = require("mongoose");
-const getUsers = require("./middleware/queryUsers");
-const compileUpdates = require("./middleware/compileUpdates");
+const Posts = require("./models/postModel");
+const UserSettings = require("./models/userSettingsModel");
+const User = require("./models/userModel");
+const createMailOptions = require("./middleware/createMailOptions");
 
 console.log("=== Manual Newsletter Send Script ===");
 console.log("Connecting to MongoDB...");
@@ -32,26 +34,89 @@ mongoose.connect(
 
     try {
       console.log("\nFetching all users...");
-      const getUserData = async () => await getUsers;
-      const result = await getUserData();
+      const allUsers = await User.find();
+      console.log(`✓ Found ${allUsers.length} user(s)`);
 
-      const users = result.map((user) => user._id);
-      console.log(`✓ Found ${users.length} user(s)`);
+      const thisMonth = new Date(Date.now()).getMonth(); // October = 9
+      const thisYear = new Date(Date.now()).getFullYear();
+      const targetMonth = thisMonth === 0 ? 11 : thisMonth - 1; // September = 8
+      const targetYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 
-      console.log("\nTriggering newsletter send for September 2025...");
-      console.log("Note: This will send emails in batches with 15-minute delays between each batch.");
-      console.log("The process may take several hours to complete.\n");
+      console.log(`\nProcessing newsletters for month ${targetMonth} (September) of ${targetYear}...`);
 
-      await compileUpdates(users);
+      let totalEmailsScheduled = 0;
+      let usersWithPosts = 0;
 
-      console.log("\n✓ Newsletter send process initiated successfully!");
-      console.log("Monitor the application logs to track progress.");
+      for (const journalUser of allUsers) {
+        const user = journalUser._id;
 
-      // Keep the process alive for a bit to ensure the first batch starts
-      setTimeout(() => {
-        console.log("\nScript completed. The newsletter sending will continue in the background.");
-        process.exit(0);
-      }, 5000);
+        // Get posts for the target month
+        const posts = await Posts.find({
+          user,
+          month: targetMonth,
+          year: targetYear,
+        }).sort({ date: 1 });
+
+        if (posts.length === 0) {
+          console.log(`  ⊘ ${journalUser.displayName || journalUser.email}: No posts for September`);
+          continue;
+        }
+
+        usersWithPosts++;
+        const settings = await UserSettings.findOne({ user });
+
+        if (!settings || !settings.recipients || settings.recipients.length === 0) {
+          console.log(`  ⊘ ${journalUser.displayName || journalUser.email}: No recipients configured`);
+          continue;
+        }
+
+        const recipientCount = settings.recipients.length;
+        totalEmailsScheduled += recipientCount;
+
+        console.log(`  ✓ ${settings.journal_name || journalUser.email}: ${posts.length} posts, ${recipientCount} recipients`);
+
+        const monthly_update = {
+          userEmail: journalUser.email,
+          recipients: settings.recipients,
+          journal_name: settings.journal_name,
+          posts,
+        };
+
+        const emailListLength = monthly_update.recipients.length;
+        const subListLength = Math.round(emailListLength / 20);
+        const FIFTEEN_MINUTES = 900000;
+
+        // Send emails in batches
+        for (let i = 1; i <= 20; i++) {
+          const subList = monthly_update.recipients.slice(
+            (i - 1) * subListLength,
+            i * subListLength
+          );
+
+          if (subList.length === 0) break;
+
+          const batchNum = i;
+          const delayMinutes = (i - 1) * 15;
+
+          if (i > 1) {
+            console.log(`    ⏳ Waiting 15 minutes before batch ${batchNum}...`);
+            await new Promise(resolve => setTimeout(resolve, FIFTEEN_MINUTES));
+          }
+
+          console.log(`    → Sending batch ${batchNum}/20 (${subList.length} emails) now`);
+          createMailOptions({ ...monthly_update, recipients: subList });
+        }
+      }
+
+      console.log("\n=== Summary ===");
+      console.log(`Users with posts: ${usersWithPosts}`);
+      console.log(`Total emails scheduled: ${totalEmailsScheduled}`);
+      console.log("\n✓ All newsletter sends have been scheduled!");
+      console.log("Emails will be sent over the next few hours.");
+      console.log("Check the console output above for 'Message sent' confirmations.\n");
+
+      // Keep process alive for the emails to send
+      console.log("Keeping process alive... Press Ctrl+C to exit after all emails are sent.");
 
     } catch (e) {
       console.error("Error sending newsletter:", e);
