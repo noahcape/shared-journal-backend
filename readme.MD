@@ -4,7 +4,7 @@ Server side code written in nodejs for shared journal web app
 
 ## Monthly Email Cron Job
 
-The server automatically sends monthly journal update emails on **day 3 of each month at midnight Pacific Time**.
+The server automatically sends monthly journal update emails on **day 3 of each month at 5pm Pacific Time**.
 
 ### Manual Email Trigger
 

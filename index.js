@@ -64,12 +64,12 @@ global.lastCronStatus = null;
 global.lastCronUserCount = null;
 
 const task = new CronJob(
-  "0 0 3 * *",
+  "0 17 3 * *",
   async () => {
     const timestamp = new Date().toISOString();
     console.log(`[CRON] ========================================`);
     console.log(`[CRON] Monthly email job started at ${timestamp}`);
-    console.log(`[CRON] Timezone: America/Los_Angeles (Day 3 of month)`);
+    console.log(`[CRON] Timezone: America/Los_Angeles (Day 3 of month, 5pm)`);
 
     global.lastCronRun = timestamp;
     global.lastCronStatus = "started";
@@ -100,7 +100,7 @@ const task = new CronJob(
   "America/Los_Angeles"
 );
 task.start();
-console.log(`[CRON] Scheduled for day 3 of each month at midnight PT. Next run: ${task.nextDate().toString()}`);
+console.log(`[CRON] Scheduled for day 3 of each month at 5pm PT. Next run: ${task.nextDate().toString()}`);
 
 // stop this for now
 setInterval(() => {
