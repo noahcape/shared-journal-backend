@@ -22,7 +22,7 @@ router.get("/status", (req, res) => {
     lastCronUserCount: global.lastCronUserCount || 0,
     emailsSentCount: global.emailsSentCount || 0,
     lastEmailSent: global.lastEmailSent || "none",
-    cronSchedule: "0 17 3 * * (Day 3 of each month, 5pm PT)"
+    cronSchedule: "0 17 2 * * (TEMPORARY: day 2 for September only, 5pm PT)"
   });
 });
 
