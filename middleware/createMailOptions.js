@@ -61,10 +61,10 @@ module.exports = async function mailOptions(data) {
     `<div style="padding: 5px; margin: 0 auto;">
             <h1>Your monthly update from ${data.journal_name}</h1>` +
     htmlArray.join("") +
-    `<p>To see all photos and past posts go to this journal's web page @ <a href="https://sharedjournal.capefamily.org/visitor/${data.journal_name
+    `<p>To see all photos and past posts go to this journal's web page @ <a href="https://nc-journal.capefamily.org/visitor/${data.journal_name
       .split(" ")
       .join("_")}">${data.journal_name}</a></p>
-        <a href="https://sharedjournal.capefamily.org/unsubscribe/${data.journal_name
+        <a href="https://nc-journal.capefamily.org/unsubscribe/${data.journal_name
           .split(" ")
           .join("_")}">Unsubscribe</a>
         </div>`;
