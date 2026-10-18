@@ -99,8 +99,13 @@ const task = new CronJob(
   true,
   "America/Los_Angeles"
 );
-task.start();
-console.log(`[CRON] Scheduled for day 3 of each month at 5pm PT. Next run: ${task.nextDate().toString()}`);
+// DISABLED 2026-10-18: this backend has been retired in favor of a new
+// DynamoDB/S3/App Runner backend (same monthly-email behavior, now with
+// on-demand sending too). This app is kept running only as a fallback/
+// reference copy of the old data - it must not also send monthly emails,
+// or recipients would get duplicates from both systems.
+// task.start();
+console.log(`[CRON] Monthly email cron is DISABLED - this backend is retired, kept only as a fallback.`);
 
 // stop this for now
 setInterval(() => {
